@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Random Name Picker – A Smart Solution for Fair Selection</title>
+  <meta name="description" content="A Random Name Picker helps select names fairly with system-based randomness—ideal for schools, offices, giveaways, and virtual events." />
+
+  <style>
+    :root{
+      /* Brand-to-brand premium palette */
+      --bg: #070A12;
+      --panel: rgba(255,255,255,.06);
+      --panel2: rgba(255,255,255,.09);
+      --border: rgba(255,255,255,.14);
+
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+
+      --brand: #7C5CFF;   /* primary */
+      --brand2:#22C55E;   /* accent */
+      --brand3:#06B6D4;   /* secondary */
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+
+      --radius: 18px;
+      --radius-lg: 26px;
+      --max: 1180px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 15% -10%, rgba(124,92,255,.35), transparent 60%),
+        radial-gradient(900px 600px at 110% 15%, rgba(34,197,94,.25), transparent 55%),
+        radial-gradient(800px 600px at 60% 120%, rgba(6,182,212,.20), transparent 55%),
+        var(--bg);
+      line-height: 1.65;
+    }
+
+    a{ color: inherit; text-decoration:none; }
+    a:focus{ outline:2px solid rgba(124,92,255,.7); outline-offset:3px; border-radius:10px; }
+
+    .container{
+      width:100%;
+      max-width: var(--max);
+      margin:0 auto;
+      padding: 0 20px;
+    }
+
+    /* HEADER (one line) */
+    header{
+      position: sticky;
+      top:0;
+      z-index:10;
+      backdrop-filter: blur(14px);
+      background: linear-gradient(to bottom, rgba(7,10,18,.88), rgba(7,10,18,.45));
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      padding: 14px 0;
+      flex-wrap: nowrap; /* keep single-line */
+      overflow-x: auto;  /* safe on small screens */
+      scrollbar-width: none;
+    }
+    .topbar::-webkit-scrollbar{ display:none; }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+    .logo{
+      width:40px;height:40px;border-radius: 14px;
+      background: conic-gradient(from 180deg, var(--brand), var(--brand2), var(--brand3), var(--brand));
+      box-shadow: 0 12px 35px rgba(124,92,255,.20);
+      border: 1px solid rgba(255,255,255,.18);
+      flex: 0 0 auto;
+    }
+    .brand-title{
+      font-weight: 900;
+      letter-spacing: -0.2px;
+      font-size: 14px;
+      margin:0;
+      line-height: 1.1;
+    }
+    .badge{
+      margin-left: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(124,92,255,.30);
+      background: rgba(124,92,255,.12);
+      color: rgba(255,255,255,.88);
+      font-weight: 900;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    nav{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+    .pill{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 13px;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .pill:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+      color: var(--text);
+    }
+    .cta{
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 13px;
+      border: 1px solid rgba(124,92,255,.55);
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(6,182,212,.85));
+      box-shadow: 0 12px 35px rgba(124,92,255,.24);
+      transition: transform .15s ease, filter .15s ease;
+    }
+    .cta:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+
+    /* HERO */
+    .hero{ padding: 30px 0 10px; }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .panel-inner{ padding: 24px; }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(34,197,94,.28);
+      background: rgba(34,197,94,.14);
+      color: rgba(255,255,255,.88);
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing:.25px;
+      margin-bottom: 12px;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:999px;
+      background: var(--brand2);
+      box-shadow: 0 0 0 6px rgba(34,197,94,.12);
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(28px, 3.2vw, 44px);
+      line-height: 1.12;
+      letter-spacing: -0.7px;
+    }
+    .lead{
+      margin:0;
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 74ch;
+      font-weight: 650;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      font-weight: 900;
+      font-size: 14px;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.08);
+      border-color: rgba(255,255,255,.22);
+    }
+    .btn.primary{
+      border-color: rgba(124,92,255,.55);
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(34,197,94,.75));
+      box-shadow: 0 14px 40px rgba(124,92,255,.20);
+    }
+
+    /* Highlight links */
+    .link{
+      color: rgba(255,255,255,.95);
+      font-weight: 900;
+      border-bottom: 2px solid rgba(34,197,94,.60);
+      padding-bottom: 2px;
+      transition: border-color .15s ease, color .15s ease;
+    }
+    .link:hover{
+      border-color: rgba(6,182,212,.75);
+      color: #fff;
+    }
+
+    /* Side stats */
+    .stats{
+      display:grid;
+      gap: 12px;
+      padding: 18px;
+    }
+    .stat{
+      padding: 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+    }
+    .stat strong{
+      display:block;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+    }
+    .stat span{
+      display:block;
+      color: var(--muted);
+      font-weight: 750;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    /* CONTENT SECTIONS */
+    main{ padding: 8px 0 34px; }
+    .section{
+      margin-top: 18px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .section-inner{ padding: 22px; }
+    h2{
+      margin: 0 0 10px;
+      font-size: 20px;
+      letter-spacing: -0.3px;
+    }
+    p{
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-weight: 650;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .card{
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+    }
+    .card h3{
+      margin: 0 0 8px;
+      font-size: 16px;
+      letter-spacing: -0.2px;
+      color: rgba(255,255,255,.92);
+    }
+    .card p{ margin:0; font-size: 14px; }
+
+    /* Required list section */
+    .benefits{
+      list-style:none;
+      padding:0;
+      margin: 10px 0 0;
+      display:grid;
+      gap: 10px;
+    }
+    .benefits li{
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+      padding: 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.92);
+      font-weight: 900;
+    }
+    .check{
+      width: 22px; height: 22px;
+      border-radius: 8px;
+      background: rgba(34,197,94,.16);
+      border: 1px solid rgba(34,197,94,.30);
+      position: relative;
+      flex: 0 0 auto;
+      margin-top: 2px;
+    }
+    .check:after{
+      content:"";
+      position:absolute;
+      left: 6px; top: 5px;
+      width: 8px; height: 4px;
+      border-left: 2px solid rgba(255,255,255,.92);
+      border-bottom: 2px solid rgba(255,255,255,.92);
+      transform: rotate(-45deg);
+    }
+
+    /* Table */
+    .table-wrap{
+      overflow:auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.03);
+      margin-top: 12px;
+    }
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+    th, td{
+      padding: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      text-align:left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th{
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: .25px;
+      color: rgba(255,255,255,.90);
+      background: rgba(255,255,255,.04);
+    }
+    td{
+      color: var(--muted);
+      font-weight: 750;
+    }
+    tr:last-child td{ border-bottom:none; }
+
+    /* FOOTER */
+    footer{
+      border-top: 1px solid var(--border);
+      padding: 24px 0 28px;
+      background: linear-gradient(to top, rgba(7,10,18,.95), rgba(7,10,18,.65));
+    }
+    .footer-grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .footer p{
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-weight: 750;
+      font-size: 14px;
+    }
+    .social{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .social a{
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.88);
+      font-weight: 900;
+      font-size: 13px;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+    .social a:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.22);
+    }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero-grid{ grid-template-columns: 1fr; }
+      .grid-2{ grid-template-columns: 1fr; }
+      .footer-grid{ grid-template-columns: 1fr; }
+      .social{ justify-content:flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER (ONE LINE) -->
+  <header>
+    <div class="container">
+      <div class="topbar" aria-label="Header Bar">
+        <div class="brand" aria-label="Brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div class="brand-title">Random Name Picker</div>
+          <div class="badge">Fair • Trusted • Fast</div>
+        </div>
+
+        <nav aria-label="Top Navigation">
+          <a class="pill" href="#what-it-does">What it does</a>
+          <a class="pill" href="#fairness">Fairness</a>
+          <a class="pill" href="#benefits">Benefits</a>
+          <a class="pill" href="#comparison">Comparison</a>
+          <a class="cta" href="#conclusion">Conclusion</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <article class="panel">
+            <div class="panel-inner">
+              <div class="kicker"><span class="dot"></span> A smarter way to pick names without bias</div>
+
+              <h1>Random Name Picker – A Smart Solution for Fair Selection</h1>
+
+              <p class="lead">
+                Choosing one name from a group may sound simple, but in real situations it often creates tension. People wonder whether
+                the choice was fair or influenced by personal preference. This problem is common in schools, offices, online contests,
+                and virtual events. To avoid misunderstandings, many people now use a random name picker.
+              </p>
+
+              <!-- FIRST LINK: intro mid -->
+              <p class="lead" style="margin-top:12px;">
+                A random name picker is a digital tool that selects a name automatically from a list. Because the selection is handled
+                by a system rather than a person, the result feels more neutral and trustworthy. This approach makes decision-making
+                smoother and more acceptable for everyone involved. Try
+                <a class="link" href="https://wheelofnames.ph/" target="_blank" rel="noopener">Random Name Picker</a>
+                for a clean, interactive spin experience.
+              </p>
+
+              <div class="hero-actions">
+                <a class="btn primary" href="#how-it-works">See How It Works</a>
+                <a class="btn" href="#daily-uses">Common Uses</a>
+              </div>
+            </div>
+          </article>
+
+          <aside class="panel" aria-label="Quick Highlights">
+            <div class="stats">
+              <div class="stat">
+                <strong>Bias-Free Results</strong>
+                <span>System-based selection builds trust</span>
+              </div>
+              <div class="stat">
+                <strong>Time Saver</strong>
+                <span>No slips, no lists, no guesswork</span>
+              </div>
+              <div class="stat">
+                <strong>More Engagement</strong>
+                <span>Animations keep everyone focused</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <!-- What it does -->
+      <section class="section" id="what-it-does">
+        <div class="section-inner">
+          <h2>What a Random Name Picker Actually Does</h2>
+          <p>
+            A random name picker works by taking a list of names and choosing one without any human involvement. Each name has the same
+            chance of being selected. The user only needs to enter the names and start the process.
+          </p>
+          <p>
+            This method removes guesswork. Instead of thinking about who should be chosen next, the system does the work. As a result,
+            the focus shifts from decision-making to participation, which improves the overall experience.
+          </p>
+        </div>
+      </section>
+
+      <!-- Why manual fails -->
+      <section class="section" id="manual-fails">
+        <div class="section-inner">
+          <h2>Why Manual Name Selection Often Fails</h2>
+          <div class="grid-2">
+            <div class="card">
+              <h3>Memory &amp; Perception Issues</h3>
+              <p>
+                Manual selection methods depend heavily on memory and perception. Teachers may unintentionally pick the same students
+                repeatedly. Managers may choose familiar names without realizing it. Even if the intention is fair, the result can feel
+                biased to others.
+              </p>
+            </div>
+            <div class="card">
+              <h3>Wasted Time &amp; Low Energy</h3>
+              <p>
+                Another problem is wasted time. Writing names, sorting lists, or trying to be “random” manually slows everything down.
+                In group activities, this disrupts flow and reduces productivity. Over time, it also reduces enthusiasm among
+                participants.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fairness -->
+      <section class="section" id="fairness">
+        <div class="section-inner">
+          <h2>How a Random Name Picker Improves Fairness</h2>
+          <p>
+            A random name picker removes personal judgment from the process. Once names are entered, the system treats them equally. No
+            name is favored, and no one is ignored.
+          </p>
+          <p>
+            This transparency builds trust. When participants know that a system made the choice, they are more likely to accept the
+            outcome. This is especially important in environments where fairness matters, such as classrooms and workplaces.
+          </p>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section class="section" id="how-it-works">
+        <div class="section-inner">
+          <h2>How the Selection Process Works</h2>
+          <p>
+            The process is simple and user-friendly. Names are added to a list, and the picker selects one name automatically. Some
+            tools display the result instantly, while others use animations to make the process more engaging.
+          </p>
+          <p>
+            Regardless of the style, the core idea remains the same: the system handles the decision. Users only need to provide the
+            names and start the selection.
+          </p>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section class="section" id="features">
+        <div class="section-inner">
+          <h2>Features That Make These Tools Useful</h2>
+          <p>
+            Modern random name pickers offer features that improve usability. Many allow users to save lists, making repeated use
+            easier. Some include visual effects or sounds that make selection more engaging.
+          </p>
+
+          <!-- SECOND LINK: content mid -->
+          <p>
+            These tools also work across devices. Whether someone is using a phone, tablet, or computer, the experience remains smooth.
+            If you want a modern web-based picker experience in a CricTime-style flow, explore
+            <a class="link" href="https://wheel-name.onrender.com/" target="_blank" rel="noopener">CricTime Wheel Name Picker</a>
+            for an interactive, audience-friendly selection layout.
+          </p>
+        </div>
+      </section>
+
+      <!-- Benefits (Required list) -->
+      <section class="section" id="benefits">
+        <div class="section-inner">
+          <h2>Key Benefits</h2>
+          <ul class="benefits" aria-label="Key Benefits list">
+            <li><span class="check" aria-hidden="true"></span> Removes bias from name selection</li>
+            <li><span class="check" aria-hidden="true"></span> Saves time and effort</li>
+            <li><span class="check" aria-hidden="true"></span> Improves trust among participants</li>
+            <li><span class="check" aria-hidden="true"></span> Easy to use for all age groups</li>
+            <li><span class="check" aria-hidden="true"></span> Useful in many different situations</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Daily uses -->
+      <section class="section" id="daily-uses">
+        <div class="section-inner">
+          <h2>Common Uses in Daily Life</h2>
+          <p>
+            In education, teachers use random name pickers to select students for answering questions or participating in discussions.
+            This ensures that everyone gets a chance, not just the most active students.
+          </p>
+          <p>
+            In professional environments, managers use these tools for assigning tasks, forming teams, or choosing reward winners. This
+            reduces conflict and promotes fairness.
+          </p>
+          <p>
+            Online creators and event hosts use random selection during live streams or contests. Random results increase credibility
+            and keep audiences engaged.
+          </p>
+        </div>
+      </section>
+
+      <!-- Better than guesswork -->
+      <section class="section" id="better-than-guesswork">
+        <div class="section-inner">
+          <h2>Why Digital Selection Is Better Than Guesswork</h2>
+          <p>
+            Guesswork often leads to repetition and dissatisfaction. People notice patterns and may feel overlooked. A random name
+            picker prevents this by using automated logic instead of human judgment.
+          </p>
+          <p>
+            Another advantage is consistency. Each selection follows the same process, making results predictable in fairness but
+            unpredictable in outcome. This balance is difficult to achieve manually.
+          </p>
+        </div>
+      </section>
+
+      <!-- Comparison -->
+      <section class="section" id="comparison">
+        <div class="section-inner">
+          <h2>Comparison Table: Random Name Picker vs Manual Selection</h2>
+          <p>Below is the table section, clearly comparing both methods.</p>
+
+          <div class="table-wrap" role="region" aria-label="Comparison table" tabindex="0">
+            <table>
+              <thead>
+                <tr>
+                  <th>Aspect</th>
+                  <th>Random Name Picker</th>
+                  <th>Manual Selection</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Fairness</td>
+                  <td>System-based</td>
+                  <td>Depends on person</td>
+                </tr>
+                <tr>
+                  <td>Speed</td>
+                  <td>Instant</td>
+                  <td>Slow</td>
+                </tr>
+                <tr>
+                  <td>Engagement</td>
+                  <td>Moderate to high</td>
+                  <td>Low</td>
+                </tr>
+                <tr>
+                  <td>Accuracy</td>
+                  <td>Reliable</td>
+                  <td>Error-prone</td>
+                </tr>
+                <tr>
+                  <td>Repetition Control</td>
+                  <td>Easy</td>
+                  <td>Difficult</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Natural writing -->
+      <section class="section" id="natural-writing">
+        <div class="section-inner">
+          <h2>Why Natural Writing Matters More Than SEO Tricks</h2>
+          <p>
+            Modern search engines focus on content that helps real users. Articles written only to rank often sound unnatural and fail
+            to build trust. Clear explanations, real problems, and simple language perform better in the long run.
+          </p>
+          <p>
+            When content is written for people first, it naturally performs well without forced keyword repetition. This approach
+            benefits both readers and search engines.
+          </p>
+        </div>
+      </section>
+
+      <!-- Who benefits -->
+      <section class="section" id="who-benefits">
+        <div class="section-inner">
+          <h2>Who Can Benefit From a Random Name Picker</h2>
+          <p>
+            Anyone who works with groups can benefit from this tool. Teachers, managers, event organizers, and content creators all face
+            situations where fair selection is important.
+          </p>
+          <p>
+            Because these tools are simple and accessible, they work for beginners and experienced users alike. No technical knowledge
+            or setup is required, which makes them easy to adopt.
+          </p>
+        </div>
+      </section>
+
+      <!-- Conclusion -->
+      <section class="section" id="conclusion">
+        <div class="section-inner">
+          <h2>Conclusion</h2>
+          <p>
+            A random name picker provides a simple and effective way to choose names fairly. By removing personal influence and
+            automating the process, it builds trust and saves time. Whether used in education, work, or online events, it makes
+            decision-making easier and more transparent.
+          </p>
+          <p>
+            For anyone tired of arguments, repetition, or unfair selection, this digital approach offers a reliable alternative.
+          </p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="gap:10px;">
+            <div class="logo" aria-hidden="true"></div>
+            <div class="brand-title" style="font-size:14px;">Random Name Picker</div>
+          </div>
+          <p>
+            Built for fair decisions—trusted by teachers, managers, and creators for transparent name selection.
+          </p>
+          <p style="font-size:12px; color:rgba(255,255,255,.55); font-weight:900;">
+            © <span id="year"></span> All rights reserved.
+          </p>
+        </div>
+
+        <div class="social" aria-label="Social Links">
+          <a href="#" aria-label="Facebook">Facebook</a>
+          <a href="#" aria-label="Instagram">Instagram</a>
+          <a href="#" aria-label="X (Twitter)">X</a>
+          <a href="#" aria-label="YouTube">YouTube</a>
+          <a href="#" aria-label="LinkedIn">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Smooth scroll for internal anchors
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener("click", (e)=>{
+        const href = a.getAttribute("href");
+        if(href && href.length > 1){
+          const el = document.querySelector(href);
+          if(el){
+            e.preventDefault();
+            el.scrollIntoView({behavior:"smooth", block:"start"});
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
